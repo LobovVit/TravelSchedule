@@ -18,12 +18,12 @@ protocol StationsListServiceProtocol {
 final class StationsListService: StationsListServiceProtocol {
     private let client: Client
     private let apikey: String
-
+    
     init(client: Client, apikey: String) {
         self.client = client
         self.apikey = apikey
     }
-
+    
     func getStationsList() async throws -> Stations {
         let response = try await client.getStationsList(query: .init(
             apikey: apikey

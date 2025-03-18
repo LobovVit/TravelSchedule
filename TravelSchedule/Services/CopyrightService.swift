@@ -18,12 +18,12 @@ protocol CopyrightServiceProtocol {
 final class CopyrightService: CopyrightServiceProtocol {
     private let client: Client
     private let apikey: String
-
+    
     init(client: Client, apikey: String) {
         self.client = client
         self.apikey = apikey
     }
-
+    
     // Копирайт Яндекс Расписаний:
     func getCopyright() async throws -> CopyrightSchedule {
         let response = try await client.getCopyright(query: .init(

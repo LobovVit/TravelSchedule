@@ -18,12 +18,12 @@ protocol ThreadServiceProtocol {
 final class ThreadService: ThreadServiceProtocol {
     private let client: Client
     private let apikey: String
-
+    
     init(client: Client, apikey: String) {
         self.client = client
         self.apikey = apikey
     }
-
+    
     // Список станций следования:
     func getThread(uid: String) async throws -> Threads {
         let response = try await client.getThread(query: .init(
