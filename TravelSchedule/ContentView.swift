@@ -13,7 +13,30 @@ struct ContentView: View {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Button("getNearestStations") {
+                APIClient.shared.nearestStations()
+            }
+            Button("getSearch") {
+                APIClient.shared.search()
+            }
+            Button("getSchedules") {
+                APIClient.shared.schedules()
+            }
+            Button("getThread") {
+                APIClient.shared.threads()
+            }
+            Button("getNearestSettlement") {
+                APIClient.shared.nearestSettlement()
+            }
+            Button("getCarrier") {
+                APIClient.shared.carriers()
+            }
+            Button("getStationsList") {
+                APIClient.shared.stationsList()
+            }
+            Button("getCopyright") {
+                APIClient.shared.copyright()
+            }
         }
         .padding()
     }
