@@ -87,6 +87,6 @@ struct RoutesListView: View {
 }
 
 #Preview {
-        RoutesListView(schedule: .constant(Schedules.sampleData))
+    RoutesListView(schedule: .constant(Mock.schedulesSampleData))
 }
 

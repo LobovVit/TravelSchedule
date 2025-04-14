@@ -14,51 +14,70 @@ struct CarrierView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Image(carrier.logoName)
-                .resizable()
-                .scaledToFit()
-                .frame(maxWidth: .infinity, maxHeight: 104)
-                .background(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 24))
-            Text("«\(carrier.title)»")
-                .font(.system(size: 24, weight: .bold))
-                .frame(maxWidth: .infinity, maxHeight: 29, alignment: .leading)
-                .padding(.vertical, 16.0)
-            VStack(alignment: .leading, spacing: 0) {
-                Text("E-mail")
-                    .font(.system(size: 17, weight: .regular))
-                    .foregroundStyle(.ypBlackWhite)
-                Button {
-                    guard let url = URL(string: "mailto:" + carrier.email) else { return }
-                    openURL(url)
-                } label: {
-                    Text("\(carrier.email)")
-                        .font(.system(size: 12, weight: .regular))
-                    .foregroundStyle(.ypBlue)
-                }
-            }
-            .frame(height: 60)
-            VStack(alignment: .leading, spacing: 0) {
-                Text("Телефон")
-                    .font(.system(size: 17, weight: .regular))
-                    .foregroundStyle(.ypBlackWhite)
-                Button {
-                    guard let url = URL(string: "tel:" + carrier.phone) else { return }
-                    openURL(url)
-                } label: {
-                    Text("\(carrier.phone)")
-                        .font(.system(size: 12, weight: .regular))
-                    .foregroundStyle(.ypBlue)
-                }
-            }
-            .frame(height: 60)
+            logo
+            title
+            emailBlock
+            phoneBlock
             Spacer()
         }
         .padding(.horizontal, 16.0)
         .navigationTitle("Информация о перевозчике")
     }
+    
+    // MARK: - Subviews
+    
+    private var logo: some View {
+        Image(carrier.logoName)
+            .resizable()
+            .scaledToFit()
+            .frame(maxWidth: .infinity, maxHeight: 104)
+            .background(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 24))
+    }
+    
+    private var title: some View {
+        Text("«\(carrier.title)»")
+            .font(.system(size: 24, weight: .bold))
+            .frame(maxWidth: .infinity, maxHeight: 29, alignment: .leading)
+            .padding(.vertical, 16.0)
+    }
+    
+    private var emailBlock: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("E-mail")
+                .font(.system(size: 17, weight: .regular))
+                .foregroundStyle(.ypBlackWhite)
+            Button {
+                guard let url = URL(string: "mailto:" + carrier.email) else { return }
+                openURL(url)
+            } label: {
+                Text(carrier.email)
+                    .font(.system(size: 12, weight: .regular))
+                    .foregroundStyle(.ypBlue)
+            }
+        }
+        .frame(height: 60)
+    }
+    
+    private var phoneBlock: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Телефон")
+                .font(.system(size: 17, weight: .regular))
+                .foregroundStyle(.ypBlackWhite)
+            Button {
+                guard let url = URL(string: "tel:" + carrier.phone) else { return }
+                openURL(url)
+            } label: {
+                Text(carrier.phone)
+                    .font(.system(size: 12, weight: .regular))
+                    .foregroundStyle(.ypBlue)
+            }
+        }
+        .frame(height: 60)
+    }
 }
 
+
 #Preview {
-    CarrierView(carrier: Carrier.sampleData[0])
+    CarrierView(carrier: Mock.carrierSampleData[0])
 }

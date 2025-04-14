@@ -12,7 +12,7 @@ struct StationView: View {
     @Binding var schedule: Schedules
     @Binding var navPath: [ViewsRouter]
     @Binding var direction: Int
-
+    @Environment(\.dismiss) var dismiss
     @State private var searchString = String()
 
     private var searchingResults: [Station] {
@@ -51,12 +51,35 @@ struct StationView: View {
         .onAppear {
             searchString = String()
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.backward")
+                        .imageScale(.large)
+                        .foregroundColor(.ypBlackWhite)
+                }
+            }
+        }
+        .contentShape(Rectangle())
+        .gesture(
+            DragGesture(coordinateSpace: .local)
+                .onEnded { value in
+                    if value.translation.width > .zero
+                        && value.translation.height > -30
+                        && value.translation.height < 30 {
+                        dismiss()
+                    }
+                }
+        )
     }
 }
 
 #Preview {
     StationView(
-        schedule: .constant(Schedules.sampleData),
+        schedule: .constant(Mock.schedulesSampleData),
         navPath: .constant([]),
         direction: .constant(0)
     )

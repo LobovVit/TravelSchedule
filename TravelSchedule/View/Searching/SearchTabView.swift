@@ -23,7 +23,7 @@ struct SearchTabView: View {
 
 #Preview {
     SearchTabView(
-        schedule: .constant(Schedules.sampleData),
+        schedule: .constant(Mock.schedulesSampleData),
         navPath: .constant([]),
         direction: .constant(0)
     )

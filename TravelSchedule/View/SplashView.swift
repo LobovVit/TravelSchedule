@@ -10,7 +10,7 @@ import SwiftUI
 struct SplashView: View {
     
     @State private var isPresented: Bool = false
-    @State private var schedule = Schedules.sampleData
+    @State private var schedule = Mock.schedulesSampleData
     @State private var darkMode = false
     
     var body: some View {

@@ -1,5 +1,5 @@
 //
-//  TabView.swift
+//  MainTabView.swift
 //  TravelSchedule
 //
 //  Created by Vitaly Lobov on 04.04.2025.
@@ -21,29 +21,30 @@ struct MainTabView: View {
                 SearchTabView(schedule: $schedule, navPath: $navPath, direction: $direction)
                     .tabItem { Image("schedule").renderingMode(.template) }
                 SettingsView(darkMode: $darkMode)
-                    .tabItem {
-                        Image("settings").renderingMode(.template)
-                    }
+                    .tabItem { Image("settings").renderingMode(.template) }
             }
             .accentColor(.ypBlackWhite)
             .toolbar(.visible, for: .tabBar)
-            .navigationDestination(for: ViewsRouter.self) { pathValue in
-                switch pathValue {
-                case .cityView:
-                    CityView(schedule: $schedule, navPath: $navPath, direction: $direction)
-                        .toolbar(.hidden, for: .tabBar)
-                case .stationView:
-                    StationView(schedule: $schedule, navPath: $navPath, direction: $direction)
-                        .toolbar(.hidden, for: .tabBar)
-                case .routeView:
-                    RoutesListView(schedule: $schedule)
-                        .toolbar(.hidden, for: .tabBar)
-                }
-            }
+            .navigationDestination(for: ViewsRouter.self, destination: destinationView)
+        }
+    }
+    
+    @ViewBuilder
+    private func destinationView(for pathValue: ViewsRouter) -> some View {
+        switch pathValue {
+        case .cityView:
+            CityView(schedule: $schedule, navPath: $navPath, direction: $direction)
+                .toolbar(.hidden, for: .tabBar)
+        case .stationView:
+            StationView(schedule: $schedule, navPath: $navPath, direction: $direction)
+                .toolbar(.hidden, for: .tabBar)
+        case .routeView:
+            RoutesListView(schedule: $schedule)
+                .toolbar(.hidden, for: .tabBar)
         }
     }
 }
 
 #Preview {
-    MainTabView(schedule: .constant(Schedules.sampleData), darkMode: .constant(false))
+    MainTabView(schedule: .constant(Mock.schedulesSampleData), darkMode: .constant(false))
 }

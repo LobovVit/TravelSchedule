@@ -14,12 +14,6 @@ struct Destination: Hashable, Identifiable {
     var stationTitle: String = ""
 }
 
-// MARK: - Mock data
 extension Destination {
     static var emptyDestination = [Destination(), Destination()]
-
-    static let sampleData: [Destination] = [
-        Destination(cityTitle: "Москва", stationTitle: "Ярославский Вокзал"),
-        Destination(cityTitle: "Санкт-Петербург", stationTitle: "Балтийский вокзал")
-    ]
 }

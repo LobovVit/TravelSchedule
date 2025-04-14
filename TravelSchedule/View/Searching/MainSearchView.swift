@@ -86,6 +86,6 @@ struct MainSearchView: View {
 }
 
 #Preview {
-    MainSearchView(schedule: .constant(Schedules.sampleData), navPath: .constant([]), direction: .constant(0))
+    MainSearchView(schedule: .constant(Mock.schedulesSampleData), navPath: .constant([]), direction: .constant(0))
 }
 

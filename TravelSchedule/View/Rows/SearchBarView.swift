@@ -47,12 +47,18 @@ struct SearchBarView: View {
             }
         }
         .frame(height: 36)
-        .background(colorScheme == .light ? .ypLightGray : .ypGray)
+        .background(colorScheme == .light ? .ypLightGray : .ypBlack)
         .cornerRadius(10)
         .padding(.horizontal, 16.0)
     }
 }
 
-#Preview {
+#Preview("Light Mode") {
     SearchBarView(searchText: .constant(""))
+        .preferredColorScheme(.light)
+}
+
+#Preview("Dark Mode") {
+    SearchBarView(searchText: .constant(""))
+        .preferredColorScheme(.dark)
 }

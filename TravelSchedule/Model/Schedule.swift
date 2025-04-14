@@ -16,15 +16,3 @@ struct Schedules: Hashable, Identifiable {
     let routes: [Route]
     let carriers: [Carrier]
 }
-
-// MARK: - Mock data
-extension Schedules {
-    static let sampleData = Schedules(
-        cities: City.sampleData,
-        stations: Station.sampleData,
-        destinations: Destination.emptyDestination,
-        routes: Route.sampleData,
-        carriers: Carrier.sampleData
-    )
-}
-
