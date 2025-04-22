@@ -45,6 +45,12 @@ struct MainTabView: View {
     }
 }
 
-#Preview {
+#Preview("Light Mode") {
     MainTabView(schedule: .constant(Mock.schedulesSampleData), darkMode: .constant(false))
+        .preferredColorScheme(.light)
+}
+
+#Preview("Dark Mode") {
+    MainTabView(schedule: .constant(Mock.schedulesSampleData), darkMode: .constant(true))
+        .preferredColorScheme(.dark)
 }

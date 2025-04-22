@@ -69,4 +69,24 @@ struct Mock {
         routes: routeSampleData,
         carriers: carrierSampleData
     )
+    
+    static let title = Array(repeating: "title", count: 5).joined(separator: " ").capitalized
+    static let description = Array(repeating: "text", count: 5).joined(separator: " ")
+    
+    static let storiesSampleData: [Story] = [
+        Story(imageName: "pic1", title: title, description: description),
+        Story(imageName: "pic2", title: title, description: description),
+        Story(imageName: "pic3", title: title, description: description),
+        Story(imageName: "pic4", title: title, description: description),
+        Story(imageName: "pic5", title: title, description: description),
+        Story(imageName: "pic6", title: title, description: description),
+        Story(imageName: "pic7", title: title, description: description),
+        Story(imageName: "pic8", title: title, description: description),
+        Story(imageName: "pic9", title: title, description: description),
+        Story(imageName: "pic10", title: title, description: description),
+        Story(imageName: "pic11", title: title, description: description),
+        Story(imageName: "pic12", title: title, description: description),
+        Story(imageName: "pic13", title: title, description: description),
+        Story(imageName: "pic14", title: title, description: description)
+    ]
 }
