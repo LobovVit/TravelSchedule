@@ -22,8 +22,8 @@ struct StoriesTabView: View {
         .ignoresSafeArea()
         .tabViewStyle(.page(indexDisplayMode: .never))
         .onChange(of: currentStory) { _ in
-                    stories[currentStory].isShowed = true
-                }
+            stories[currentStory].isShowed = true
+        }
     }
 }
 

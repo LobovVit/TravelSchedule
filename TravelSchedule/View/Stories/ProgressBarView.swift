@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Combine
 
 struct ProgressBarView: View {
     let storiesCount: Int

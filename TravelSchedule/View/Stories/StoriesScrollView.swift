@@ -13,12 +13,12 @@ struct StoriesScrollView: View {
 
     @Binding var stories: [Story]
 
-    @State var isStoriesShowing = false
-    @State var currentStory = 0
+    @State private var isStoriesShowing = false
+    @State private var currentStory = 0
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            LazyHGrid(rows: rows, alignment: .center, spacing: 12.0) {
+            LazyHGrid(rows: rows, spacing: 12.0) {
                 ForEach(Array(stories.enumerated()), id: \.offset) { index, story in
                     StoryItemView(story: story)
                         .onTapGesture {
