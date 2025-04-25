@@ -12,9 +12,11 @@ struct SearchTabView: View {
     @Binding var schedule: Schedules
     @Binding var navPath: [ViewsRouter]
     @Binding var direction: Int
+    @State private var stories: [Story] = Mock.storiesSampleData
     
     var body: some View {
         VStack(spacing: 0.0) {
+            StoriesScrollView(stories: $stories)
             MainSearchView(schedule: $schedule, navPath: $navPath, direction: $direction)
             Spacer()
         }
