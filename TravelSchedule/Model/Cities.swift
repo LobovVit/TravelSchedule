@@ -10,5 +10,6 @@ import Foundation
 struct City: Hashable, Identifiable {
     let id = UUID()
     let title: String
+    let yandexCode: String
     let stationsCount: Int
 }

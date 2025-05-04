@@ -23,7 +23,7 @@ final class APIClient {
     private let stationsListService: StationsListService?
     private let copyrightService: CopyrightService?
     
-    private var cacheCityWithStations: [Components.Schemas.Settlements] = []
+    private var cacheSettlements: [Components.Schemas.Settlements] = []
     
     private init() {
         let myURL: URL
@@ -80,8 +80,8 @@ final class APIClient {
         )
     }
     
-    func fetchCityWithStations() async throws -> [Components.Schemas.Settlements] {
-        if !cacheCityWithStations.isEmpty { return cacheCityWithStations }
+    func fetchStations() async throws -> [Components.Schemas.Settlements] {
+        if !cacheSettlements.isEmpty { return cacheSettlements }
         let stationsList = try await stationsListService?.getStationsList()
         guard let countries = stationsList?.countries else { throw AppErrorType.serverError }
         countries.forEach {
@@ -89,11 +89,11 @@ final class APIClient {
             $0.regions?.forEach {
                 if $0.title?.isEmpty ?? true { return }
                 $0.settlements?.forEach { settlement in
-                    cacheCityWithStations.append(settlement)
+                    cacheSettlements.append(settlement)
                 }
             }
         }
-        return cacheCityWithStations
+        return cacheSettlements
     }
     
     func nearestStations() {

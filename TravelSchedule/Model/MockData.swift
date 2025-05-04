@@ -14,11 +14,13 @@ struct Mock {
     ]
     
     static let citySampleData = [
-        City(title: "Москва", stationsCount: 1),
-        City(title: "Санкт-Петербург", stationsCount: 1),
-        City(title: "Сочи", stationsCount: 1),
-        City(title: "Горный Воздух", stationsCount: 1),
-        City(title: "Краснодар", stationsCount: 1)
+        City(title: "Москва", yandexCode: "", stationsCount: 0),
+        City(title: "Санкт-Петербург", yandexCode: "", stationsCount: 0),
+        City(title: "Сочи", yandexCode: "", stationsCount: 0),
+        City(title: "Горный Воздух", yandexCode: "", stationsCount: 0),
+        City(title: "Краснодар", yandexCode: "", stationsCount: 0),
+        City(title: "Казань", yandexCode: "", stationsCount: 0),
+        City(title: "Омск", yandexCode: "", stationsCount: 0)
     ]
 
     static let destinationSampleData: [Destination] = [
@@ -54,12 +56,12 @@ struct Mock {
     ]
     
     static let stationSampleData = [
-        Station(title: "Киевский вокзал"),
-        Station(title: "Курский вокзал"),
-        Station(title: "Ярославский вокзал"),
-        Station(title: "Белорусский вокзал"),
-        Station(title: "Савеловский вокзал"),
-        Station(title: "Ленинградский вокзал")
+        Station(title: "Киевский вокзал", type: "dummy", code: "dummy", latitude: 0, longitude: 0),
+        Station(title: "Курский вокзал", type: "dummy", code: "dummy", latitude: 0, longitude: 0),
+        Station(title: "Ярославский вокзал", type: "dummy", code: "dummy", latitude: 0, longitude: 0),
+        Station(title: "Белорусский вокзал", type: "dummy", code: "dummy", latitude: 0, longitude: 0),
+        Station(title: "Савеловский вокзал", type: "dummy", code: "dummy", latitude: 0, longitude: 0),
+        Station(title: "Ленинградский вокзал", type: "dummy", code: "dummy", latitude: 0, longitude: 0)
     ]
     
     static let schedulesSampleData = Schedules(
