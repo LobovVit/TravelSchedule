@@ -14,11 +14,11 @@ struct Mock {
     ]
     
     static let citySampleData = [
-        City(title: "Москва"),
-        City(title: "Санкт-Петербург"),
-        City(title: "Сочи"),
-        City(title: "Горный Воздух"),
-        City(title: "Краснодар")
+        City(title: "Москва", stationsCount: 1),
+        City(title: "Санкт-Петербург", stationsCount: 1),
+        City(title: "Сочи", stationsCount: 1),
+        City(title: "Горный Воздух", stationsCount: 1),
+        City(title: "Краснодар", stationsCount: 1)
     ]
 
     static let destinationSampleData: [Destination] = [

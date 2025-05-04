@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     
     @Binding var darkMode: Bool
+    @StateObject private var viewModel = SettingsViewModel()
     
     var body: some View {
         VStack(spacing: 0) {
@@ -31,12 +32,14 @@ struct SettingsView: View {
             
             VStack(alignment: .center, spacing: 16) {
                 Text("Приложение использует API «Яндекс.Расписания»")
+                Text(viewModel.appVersion)
             }
             .font(.system(size: 12, weight: .regular))
             .frame(minHeight: 44)
         }
         .padding(.vertical, 24.0)
         .foregroundColor(.ypBlackWhite)
+        .onAppear { viewModel.loadAppInfo() }
     }
 }
 

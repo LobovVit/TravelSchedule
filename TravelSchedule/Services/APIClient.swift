@@ -23,6 +23,8 @@ final class APIClient {
     private let stationsListService: StationsListService?
     private let copyrightService: CopyrightService?
     
+    private var cacheCityWithStations: [Components.Schemas.Settlements] = []
+    
     private init() {
         let myURL: URL
         do {
@@ -78,6 +80,21 @@ final class APIClient {
         )
     }
     
+    func fetchCityWithStations() async throws -> [Components.Schemas.Settlements] {
+        if !cacheCityWithStations.isEmpty { return cacheCityWithStations }
+        let stationsList = try await stationsListService?.getStationsList()
+        guard let countries = stationsList?.countries else { throw AppErrorType.serverError }
+        countries.forEach {
+            if $0.title != "Россия" { return }
+            $0.regions?.forEach {
+                if $0.title?.isEmpty ?? true { return }
+                $0.settlements?.forEach { settlement in
+                    cacheCityWithStations.append(settlement)
+                }
+            }
+        }
+        return cacheCityWithStations
+    }
     
     func nearestStations() {
         Task {
