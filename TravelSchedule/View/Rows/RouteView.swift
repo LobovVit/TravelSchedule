@@ -15,11 +15,15 @@ struct RouteView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 8) {
-                Image(carrier.logoName)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 38, height: 38)
-                    .padding(.leading, 14)
+                AsyncImage(url: URL(string: carrier.logoSVGUrl.isEmpty ? carrier.logoUrl : carrier.logoSVGUrl)) { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 38)
+                        .padding(.leading, 14)
+                } placeholder: {
+                    placeholderImageView
+                }
                 HStack(spacing: 0) {
                     VStack(alignment: .leading) {
                         Text(carrier.title)
@@ -68,6 +72,15 @@ struct RouteView: View {
         .background(.ypLightGray)
         .frame(maxWidth: .infinity, maxHeight: 104)
         .clipShape(RoundedRectangle(cornerRadius: 24))
+    }
+    
+    var placeholderImageView: some View {
+        Image(systemName: carrier.placeholder)
+            .renderingMode(.template)
+            .resizable()
+            .scaledToFit()
+            .frame(width: 38, height: 38)
+            .padding(.leading, 14)
     }
 }
 

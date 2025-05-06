@@ -9,38 +9,28 @@ import SwiftUI
 
 struct MainSearchView: View {
     
-    @Binding var schedule: Schedules
-    @Binding var navPath: [ViewsRouter]
-    @Binding var direction: Int
     private let dummyDirection = ["Откуда", "Куда"]
-    
-    private var isDepartureReady: Bool {
-        !schedule.destinations[0].cityTitle.isEmpty && !schedule.destinations[0].stationTitle.isEmpty
-    }
-
-    private var isArrivalReady: Bool {
-        !schedule.destinations[1].cityTitle.isEmpty && !schedule.destinations[1].stationTitle.isEmpty
-    }
+    @ObservedObject var scheduleViewModel: ScheduleViewModel
     
     var body: some View {
         HStack(alignment: .center, spacing: 16) {
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(0 ..< 2) { item in
-                    let isCityEmpty = schedule.destinations[item].cityTitle.isEmpty
-                    let isStationEmpty = schedule.destinations[item].stationTitle.isEmpty
-                    let destinationLabel = isCityEmpty ? dummyDirection[item] : schedule.destinations[item].cityTitle
-                    + (isStationEmpty ? "" : " (" + schedule.destinations[item].stationTitle + ")")
+                    let isCityEmpty = scheduleViewModel.destinations[item].city.title.isEmpty
+                    let isStationEmpty = scheduleViewModel.destinations[item].station.title.isEmpty
+                    let destinationLabel = isCityEmpty ? dummyDirection[item] : scheduleViewModel.destinations[item].city.title
+                    + (isStationEmpty ? "" : " (" + scheduleViewModel.destinations[item].station.title + ")")
                     NavigationLink(value: ViewsRouter.cityView) {
                         HStack {
                             Text(destinationLabel)
-                                .foregroundStyle(schedule.destinations[item].cityTitle.isEmpty ? .ypGray : .ypBlack)
+                                .foregroundStyle(scheduleViewModel.destinations[item].city.title.isEmpty ? .ypGray : .ypBlack)
                             Spacer()
                         }
                         .padding(16.0)
                         .frame(maxWidth: .infinity, maxHeight: 48)
                     }
                     .simultaneousGesture(TapGesture().onEnded {
-                        direction = item
+                        scheduleViewModel.setDirection(to: item)
                     })
                 }
             }
@@ -52,11 +42,7 @@ struct MainSearchView: View {
                     .foregroundColor(.ypWhite)
                     .frame(width: 36)
                 Button {
-                    (
-                        schedule.destinations[0], schedule.destinations[1]
-                    ) = (
-                        schedule.destinations[1], schedule.destinations[0]
-                    )
+                    scheduleViewModel.swapDestinations()
                 } label: {
                     Image(systemName: "arrow.2.squarepath")
                         .foregroundColor(.ypBlue)
@@ -70,7 +56,7 @@ struct MainSearchView: View {
         .padding(.top, 20.0)
         .padding(.horizontal, 16.0)
 
-        if isDepartureReady && isArrivalReady {
+        if scheduleViewModel.isSearchButtonReady {
             NavigationLink(value: ViewsRouter.routeView) {
                 Text("Найти")
                     .font(.system(size: 17, weight: .bold))
@@ -86,6 +72,6 @@ struct MainSearchView: View {
 }
 
 #Preview {
-    MainSearchView(schedule: .constant(Mock.schedulesSampleData), navPath: .constant([]), direction: .constant(0))
+    MainSearchView(scheduleViewModel: ScheduleViewModel())
 }
 

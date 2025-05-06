@@ -8,12 +8,21 @@
 import Foundation
 
 // MARK: - Struct
-struct Destination: Hashable, Identifiable {
+struct Destination: Hashable, Identifiable, Sendable {
     let id = UUID()
-    var cityTitle: String = ""
-    var stationTitle: String = ""
+    var city: City
+    var station: Station
 }
 
 extension Destination {
-    static var emptyDestination = [Destination(), Destination()]
+    static let emptyDestination = [
+        Destination(
+            city: City(title: "", yandexCode: "", stationsCount: 0),
+            station: Station(title: "", type: "", code: "", latitude: 0, longitude: 0)
+        ),
+        Destination(
+            city: City(title: "", yandexCode: "", stationsCount: 0),
+            station: Station(title: "", type: "", code: "", latitude: 0, longitude: 0)
+        )
+    ]
 }

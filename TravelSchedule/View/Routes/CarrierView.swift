@@ -27,12 +27,25 @@ struct CarrierView: View {
     // MARK: - Subviews
     
     private var logo: some View {
-        Image(carrier.logoName)
+        AsyncImage(url: URL(string: carrier.logoUrl)) { image in
+            image
+                .resizable()
+                .scaledToFit()
+        } placeholder: {
+            placeholderImageView
+        }
+        .frame(maxWidth: .infinity, maxHeight: 104)
+        .background(.white)
+        .clipShape(RoundedRectangle(cornerRadius: 24))
+    }
+    
+    var placeholderImageView: some View {
+        Image(systemName: carrier.placeholder)
+            .renderingMode(.template)
             .resizable()
             .scaledToFit()
-            .frame(maxWidth: .infinity, maxHeight: 104)
-            .background(.white)
-            .clipShape(RoundedRectangle(cornerRadius: 24))
+            .frame(maxWidth: .infinity, maxHeight: 52)
+            .padding(.vertical, 26)
     }
     
     private var title: some View {

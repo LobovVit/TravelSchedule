@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum AppErrorType: Equatable  {
+enum AppErrorType: Equatable, Error  {
     case noInternet
     case serverError
     case invalidURL

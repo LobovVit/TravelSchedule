@@ -9,29 +9,21 @@ import SwiftUI
 
 struct StationView: View {
     
-    @Binding var schedule: Schedules
-    @Binding var navPath: [ViewsRouter]
-    @Binding var direction: Int
     @Environment(\.dismiss) var dismiss
-    @State private var searchString = String()
-
-    private var searchingResults: [Station] {
-        searchString.isEmpty
-            ? schedule.stations
-            : schedule.stations.filter { $0.title.lowercased().contains(searchString.lowercased()) }
-    }
+    @ObservedObject var scheduleViewModel: ScheduleViewModel
+    @ObservedObject var viewModel: StationViewModel
     
     var body: some View {
         VStack(spacing: 0) {
-            SearchBarView(searchText: $searchString)
-            if searchingResults.isEmpty {
+            SearchBarView(searchText: $viewModel.searchString)
+            if viewModel.filteredStations.isEmpty && viewModel.state != .loading {
                 SearchNothingView(notification: "Станция не найдена")
             } else {
                 ScrollView(.vertical) {
-                    ForEach(searchingResults) { station in
+                    ForEach(viewModel.filteredStations) { station in
                         Button {
-                            schedule.destinations[direction].stationTitle = station.title
-                            navPath.removeAll()
+                            scheduleViewModel.saveSelected(station: station)
+                            scheduleViewModel.navPath.removeAll()
                         } label: {
                             RowSearchView(rowString: station.title)
                         }
@@ -48,9 +40,6 @@ struct StationView: View {
         .navigationTitle("Выбор станции")
         .navigationBarTitleDisplayMode(.inline)
         .foregroundStyle(.ypBlackWhite)
-        .onAppear {
-            searchString = String()
-        }
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -74,14 +63,17 @@ struct StationView: View {
                     }
                 }
         )
+        .task {
+            viewModel.searchString = String()
+            try? await viewModel.fetchStations()
+        }
     }
 }
 
 #Preview {
     StationView(
-        schedule: .constant(Mock.schedulesSampleData),
-        navPath: .constant([]),
-        direction: .constant(0)
+        scheduleViewModel: ScheduleViewModel(),
+        viewModel: StationViewModel(store: [],city: Mock.citySampleData[0])
     )
 }
 

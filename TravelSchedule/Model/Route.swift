@@ -9,6 +9,7 @@ import Foundation
 
 struct Route: Hashable, Identifiable {
     let id = UUID()
+    let code: String
     let date: String
     let departureTime: String
     let arrivalTime: String
@@ -17,5 +18,5 @@ struct Route: Hashable, Identifiable {
     var isDirect: Bool {
         connectionStation.isEmpty
     }
-    let carrierID: UUID
+    let carrierCode: Int
 }

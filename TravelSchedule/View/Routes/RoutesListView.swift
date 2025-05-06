@@ -9,84 +9,77 @@ import SwiftUI
 
 struct RoutesListView: View {
     
-    @Binding var schedule: Schedules
-    @State var currentFilter = Filter()
+    @StateObject var viewModel: RoutesViewModel
+    @ObservedObject var scheduleViewModel: ScheduleViewModel
     
-    private var departure: String {
-        schedule.destinations[0].cityTitle + " (" + schedule.destinations[0].stationTitle + ") "
+    init(scheduleViewModel: ScheduleViewModel) {
+        self.scheduleViewModel = scheduleViewModel
+        _viewModel = StateObject(wrappedValue: RoutesViewModel(destinations: scheduleViewModel.destinations ))
     }
-
-    private var arrival: String {
-        schedule.destinations[1].cityTitle + " (" + schedule.destinations[1].stationTitle + ") "
-    }
-
-    private var filteredRoutes: [Route] {
-        let complexRoutes = currentFilter.isWithTransfers
-            ? schedule.routes
-            : schedule.routes.filter { $0.isDirect == true }
-        var allRoutes = currentFilter.isAtNight
-            ? complexRoutes.filter { $0.departureTime.starts(with: /0[0-5]/) }
-            : []
-        allRoutes += currentFilter.isMorning
-        ? complexRoutes.filter { $0.departureTime.starts(with: /0[6-9]/) || $0.departureTime.starts(with: /1[0-1]/) }
-        : []
-        allRoutes += currentFilter.isAfternoon
-            ? complexRoutes.filter { $0.departureTime.starts(with: /1[2-8]/) }
-            : []
-        allRoutes += currentFilter.isEvening
-            ? complexRoutes.filter { $0.departureTime.starts(with: /19/) || $0.departureTime.starts(with: /2[0-4]/) }
-            : []
-        return allRoutes.sorted { $0.date < $1.date }
-    }
+    
     
     var body: some View {
-        VStack(spacing: 0) {
-            (Text(departure) + Text(Image(systemName: "arrow.forward")).baselineOffset(-1) + Text(arrival))
-                .font(.system(size: 24, weight: .bold))
-
-            if filteredRoutes.isEmpty {
+        Group {
+            switch viewModel.state {
+            case .loading:
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .ypBlackWhite))
+                    .task {
+                        try? await viewModel.searchRoutes()
+                    }
+            case .none:
                 SearchNothingView(notification: "Вариантов нет")
-            } else {
-                ScrollView(.vertical) {
-                    ForEach(filteredRoutes) { route in
-                        if let carrier = schedule.carriers.first(where: { $0.id == route.carrierID }) {
-                            NavigationLink {
-                                CarrierView(carrier: carrier)
-                            } label: {
-                                RouteView(route: route, carrier: carrier)
+            case .loaded:
+                VStack(spacing: 0) {
+                    (Text(viewModel.departure) + Text(Image(systemName: "arrow.forward")).baselineOffset(-1) + Text(viewModel.arrival))
+                        .font(.system(size: 24, weight: .bold))
+                    ScrollView(.vertical) {
+                        ForEach(viewModel.filteredRoutes) { route in
+                            if let carrier = viewModel.carriers.first(where: { $0.code == route.carrierCode }) {
+                                NavigationLink {
+                                    CarrierView(carrier: carrier)
+                                } label: {
+                                    RouteView(route: route, carrier: carrier)
+                                }
                             }
                         }
                     }
+                    .padding(.vertical, 16.0)
+                    
+                    Spacer()
+                    
+                    NavigationLink {
+                        FilterView(filter: Binding(
+                            get: { viewModel.filter },
+                            set: { viewModel.filter = $0 }
+                        ))
+                    } label: {
+                        HStack(alignment: .center, spacing: 4) {
+                            Text("Уточнить время")
+                                .font(.system(size: 17, weight: .bold))
+                            Image(systemName: "circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 8, height: 8)
+                                .foregroundColor(viewModel.filter == Filter.fullSearch ? .clear : .ypRed)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: 60)
+                        .background(.ypBlue)
+                        .foregroundStyle(.ypWhite)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                    }
                 }
-                .padding(.vertical, 16.0)
-            }
-
-            Spacer()
-
-            NavigationLink {
-                FilterView(filter: $currentFilter)
-            } label: {
-                HStack(alignment: .center, spacing: 4) {
-                    Text("Уточнить время")
-                        .font(.system(size: 17, weight: .bold))
-                    Image(systemName: "circle.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 8, height: 8)
-                        .foregroundColor(currentFilter == Filter.fullSearch ? .clear : .ypRed)
-                }
-                .frame(maxWidth: .infinity, maxHeight: 60)
-                .background(.ypBlue)
-                .foregroundStyle(.ypWhite)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .padding(.horizontal, 16.0)
+                .navigationBarTitleDisplayMode(.inline)
+            case .error:
+                ErrorView(type: viewModel.currentError)
             }
         }
-        .padding(.horizontal, 16.0)
-        .navigationBarTitleDisplayMode(.inline)
     }
+    
 }
 
 #Preview {
-    RoutesListView(schedule: .constant(Mock.schedulesSampleData))
+    RoutesListView(scheduleViewModel: ScheduleViewModel())
 }
 
