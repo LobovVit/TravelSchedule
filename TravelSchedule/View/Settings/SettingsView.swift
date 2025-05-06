@@ -39,7 +39,9 @@ struct SettingsView: View {
         }
         .padding(.vertical, 24.0)
         .foregroundColor(.ypBlackWhite)
-        .onAppear { viewModel.loadAppInfo() }
+        .task {
+            viewModel.loadAppInfo()
+        }
     }
 }
 

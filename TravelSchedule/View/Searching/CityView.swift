@@ -9,36 +9,30 @@ import SwiftUI
 
 struct CityView: View {
     
-    @Binding var schedule: Schedules
-    @Binding var navPath: [ViewsRouter]
-    @Binding var direction: Int
     @Environment(\.dismiss) var dismiss
-    @State private var searchString = String()
-
-    private var searchingResults: [City] {
-        searchString.isEmpty
-            ? schedule.cities
-            : schedule.cities.filter { $0.title.lowercased().contains(searchString.lowercased()) }
-    }
+    @ObservedObject var scheduleViewModel: ScheduleViewModel
+    @ObservedObject var viewModel: CityViewModel
     
     var body: some View {
         VStack(spacing: 0) {
-            SearchBarView(searchText: $searchString)
-            if searchingResults.isEmpty {
+            SearchBarView(searchText: $viewModel.searchString)
+            if viewModel.filteredCities.isEmpty && viewModel.state != .loading {
                 SearchNothingView(notification: "Город не найден")
             } else {
                 ScrollView(.vertical) {
-                    ForEach(searchingResults) { city in
-                        NavigationLink(value: ViewsRouter.stationView) {
-                            RowSearchView(rowString: city.title)
+                    LazyVStack(spacing: .zero) {
+                        ForEach(viewModel.filteredCities) { city in
+                            NavigationLink(value: ViewsRouter.stationView) {
+                                RowSearchView(rowString: city.title)
+                            }
+                            .simultaneousGesture(TapGesture().onEnded {
+                                scheduleViewModel.saveSelected(city: city)
+                            })
+                            .font(.system(size: 17, weight: .regular))
+                            .padding(.horizontal, 16.0)
+                            .frame(maxWidth: .infinity, maxHeight: 60)
+                            .padding(.vertical, 16.0)
                         }
-                        .simultaneousGesture(TapGesture().onEnded {
-                            schedule.destinations[direction].cityTitle = city.title
-                        })
-                        .font(.system(size: 17, weight: .regular))
-                        .padding(.horizontal, 16.0)
-                        .frame(maxWidth: .infinity, maxHeight: 60)
-                        .padding(.vertical, 16.0)
                     }
                 }
                 .padding(.vertical, 16.0)
@@ -48,9 +42,6 @@ struct CityView: View {
         .navigationTitle("Выбор города")
         .navigationBarTitleDisplayMode(.inline)
         .foregroundStyle(.ypBlackWhite)
-        .onAppear {
-            searchString = String()
-        }
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -74,10 +65,22 @@ struct CityView: View {
                     }
                 }
         )
+        .task {
+            viewModel.searchString = String()
+            try? await viewModel.fetchCities()
+        }
+        .overlay {
+            if viewModel.state == .loading {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .ypBlackWhite))
+            }
+        }
     }
     
 }
 
 #Preview {
-    CityView(schedule: .constant(Mock.schedulesSampleData), navPath: .constant([]), direction: .constant(0))
+    CityView(scheduleViewModel: ScheduleViewModel(),
+             viewModel: CityViewModel(store: [])
+    )
 }

@@ -9,10 +9,8 @@ import SwiftUI
 
 struct SearchTabView: View {
     
-    @Binding var schedule: Schedules
-    @Binding var navPath: [ViewsRouter]
-    @Binding var direction: Int
-    @StateObject private var storiesViewModel = StoriesViewModel()
+    @ObservedObject var storiesViewModel: StoriesViewModel
+    @ObservedObject var viewModel: ScheduleViewModel
     
     var body: some View {
         VStack(spacing: 0.0) {
@@ -20,19 +18,14 @@ struct SearchTabView: View {
                 get: { storiesViewModel.stories },
                 set: { storiesViewModel.stories = $0 }
             ))
-            MainSearchView(schedule: $schedule, navPath: $navPath, direction: $direction)
+            MainSearchView(scheduleViewModel: viewModel)
             Spacer()
-        }
-        .task {
-            await storiesViewModel.loadStories()
         }
     }
 }
 
 #Preview {
-    SearchTabView(
-        schedule: .constant(Mock.schedulesSampleData),
-        navPath: .constant([]),
-        direction: .constant(0)
+    SearchTabView(storiesViewModel: StoriesViewModel(),
+                  viewModel: ScheduleViewModel()
     )
 }

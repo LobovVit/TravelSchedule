@@ -8,6 +8,7 @@
 import SwiftUI
 import WebKit
 
+@MainActor
 struct WebView: UIViewRepresentable {
     
     let url: String
@@ -80,7 +81,7 @@ extension WebView{
             handleError(error)
         }
         
-        func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+        private func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
                     if let response = navigationResponse.response as? HTTPURLResponse,
                        response.statusCode >= 400 {
                         DispatchQueue.main.async {

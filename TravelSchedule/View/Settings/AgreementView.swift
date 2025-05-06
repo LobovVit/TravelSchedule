@@ -14,6 +14,7 @@ enum AgreementState: Equatable {
     case error(AppErrorType)
 }
 
+@MainActor
 struct AgreementView: View {
     
     @State private var loadingProgress: Double = 0.0

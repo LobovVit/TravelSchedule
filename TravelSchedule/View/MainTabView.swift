@@ -10,15 +10,14 @@ import SwiftUI
 
 struct MainTabView: View {
     
-    @Binding var schedule: Schedules
     @Binding var darkMode: Bool
-    @State var navPath: [ViewsRouter] = []
-    @State var direction: Int = 0
+    @ObservedObject var scheduleViewModel: ScheduleViewModel
+    @ObservedObject var storiesViewModel: StoriesViewModel
     
     var body: some View {
-        NavigationStack(path: $navPath) {
+        NavigationStack(path: $scheduleViewModel.navPath) {
             TabView {
-                SearchTabView(schedule: $schedule, navPath: $navPath, direction: $direction)
+                SearchTabView(storiesViewModel: storiesViewModel, viewModel: scheduleViewModel)
                     .tabItem { Image("schedule").renderingMode(.template) }
                 SettingsView(darkMode: $darkMode)
                     .tabItem { Image("settings").renderingMode(.template) }
@@ -33,24 +32,35 @@ struct MainTabView: View {
     private func destinationView(for pathValue: ViewsRouter) -> some View {
         switch pathValue {
         case .cityView:
-            CityView(schedule: $schedule, navPath: $navPath, direction: $direction)
+            CityView(scheduleViewModel: scheduleViewModel,
+                     viewModel: CityViewModel(store: scheduleViewModel.citiesWithStations)
+            )
                 .toolbar(.hidden, for: .tabBar)
         case .stationView:
-            StationView(schedule: $schedule, navPath: $navPath, direction: $direction)
+            StationView(scheduleViewModel: scheduleViewModel,
+                        viewModel: StationViewModel(store: scheduleViewModel.citiesWithStations,
+                                                    city: scheduleViewModel.destinations[scheduleViewModel.direction].city)
+            )
                 .toolbar(.hidden, for: .tabBar)
         case .routeView:
-            RoutesListView(schedule: $schedule)
+            RoutesListView(scheduleViewModel: scheduleViewModel)
                 .toolbar(.hidden, for: .tabBar)
         }
     }
 }
 
 #Preview("Light Mode") {
-    MainTabView(schedule: .constant(Mock.schedulesSampleData), darkMode: .constant(false))
+    MainTabView(darkMode: .constant(false),
+                scheduleViewModel: ScheduleViewModel(),
+                storiesViewModel: StoriesViewModel()
+    )
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark Mode") {
-    MainTabView(schedule: .constant(Mock.schedulesSampleData), darkMode: .constant(true))
+    MainTabView(darkMode: .constant(true),
+                scheduleViewModel: ScheduleViewModel(),
+                storiesViewModel: StoriesViewModel()
+    )
         .preferredColorScheme(.dark)
 }

@@ -13,7 +13,7 @@ class StoriesViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
 
-    func loadStories() async {
+    func loadStories() async throws {
         isLoading = true
         defer { isLoading = false }
 

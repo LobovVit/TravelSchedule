@@ -9,9 +9,9 @@ import SwiftUI
 
 struct SplashView: View {
     
-    @State private var schedule = Mock.schedulesSampleData
     @State private var darkMode = false
     @StateObject private var scheduleViewModel = ScheduleViewModel()
+    @StateObject private var storiesViewModel = StoriesViewModel()
     
     var body: some View {
         Group {
@@ -23,12 +23,13 @@ struct SplashView: View {
                     .onAppear {
                         Task {
                             try? await scheduleViewModel.fetchData()
+                            try? await storiesViewModel.loadStories()
                         }
                     }
             case .loaded:
-                Text("Loaded \(scheduleViewModel.citiesWithStations.count)" )
-                MainTabView(schedule: $schedule,
-                            darkMode: $darkMode)
+                MainTabView(darkMode: $darkMode,
+                            scheduleViewModel: scheduleViewModel,
+                            storiesViewModel: storiesViewModel)
                     .environment(\.colorScheme, darkMode ? .dark : .light)
             case .error:
                 ErrorView(type: scheduleViewModel.currentError)
